@@ -4,8 +4,6 @@ const fs = require("fs");
 const server = http.createServer((request, response) => {
   //Cargamos páginas
   let path = request.url.split("/")[1];
-  console.log("**********");
-  console.log(path);
   let log =
     `\n${request.method}|${new Date().toLocaleTimeString()}|` +
     `${request.headers.host}/${path}`;
