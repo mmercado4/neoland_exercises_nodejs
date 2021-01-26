@@ -1,0 +1,15 @@
+{
+  "name": "api-cursos",
+  "version": "1.0.0",
+  "description": "Api con la información de los cursos de Neoland",
+  "main": "api.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Miguel Mercado",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
