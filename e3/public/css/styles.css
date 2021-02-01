@@ -6,5 +6,12 @@
 
 body {
   min-height: 100vh;
-  font-family: "Courier New", Courier, monospace;
+  width: 100%;
+  font-family: "Raleway", sans-serif;
+  background-color: #ffffff;
+}
+
+section {
+  width: 100%;
+  padding-left: 100px;
 }

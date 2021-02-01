@@ -45,13 +45,13 @@ const server = http
             response.write("<h1>Page not found</h1>");
             response.end();
           } else {
-            response.writeHead(200);
+            response.writeHead(200, { "Content-Type": contentType });
             response.write(data);
             response.end();
           }
         });
       } else {
-        response.writeHead(200);
+        response.writeHead(200, { "Content-Type": contentType });
         response.write(data);
         response.end();
       }
