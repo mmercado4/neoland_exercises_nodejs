@@ -8,10 +8,80 @@ body {
   min-height: 100vh;
   width: 100%;
   font-family: "Raleway", sans-serif;
-  background-color: #ffffff;
+  background-color: #f4f4f2;
+}
+
+header {
+  width: 100%;
+  margin: 20px 0;
+  text-align: center;
+}
+
+h1 {
+  font-size: 4em;
+}
+
+h1 a {
+  text-decoration: none;
+  color: #495464;
+}
+
+nav {
+  width: 70%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav a {
+  text-decoration: none;
+  color: #495464;
+  font-size: 1.5em;
+  margin: 20px;
+  font-weight: bold;
+  border-bottom: 2px solid transparent;
+}
+
+nav a:hover {
+  border-bottom: 2px solid #495464;
+  transition: border 0.5s;
 }
 
 section {
-  width: 100%;
-  padding-left: 100px;
+  width: 75%;
+  margin: 0 auto;
+  background-color: #e8e8e8;
+  border-radius: 6px;
+  box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  padding: 15px;
+  margin-bottom: 50px;
+}
+
+section h2 {
+  color: #495464;
+  font-size: 2.5em;
+  margin-bottom: 15px;
+}
+
+section ol {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+section ol li {
+  list-style-type: none;
+  padding: 20px;
+  font-size: 1.5em;
+}
+
+.selected {
+  border-bottom: 2px solid #495464;
+}
+
+.topten {
+  flex-direction: column;
 }
