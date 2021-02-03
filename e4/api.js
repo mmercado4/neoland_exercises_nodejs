@@ -40,7 +40,7 @@ api.get("/api/film", (request, response) => {
   fs.readFile("db/dbFake.json", (error, data) => {
     if (error) throw error;
     const filmList = JSON.parse(data);
-    let filmId = Number(request.query.id);
+    let filmId = Number(request.body.id);
     let filmIndex = filmList.findIndex((film) => film.id === filmId);
     response.status(200).send({
       success: true,
@@ -78,6 +78,33 @@ api.post("/api/films", (request, response) => {
           message: "Film was inserted successfully!",
           url: "/api/films",
           method: "POST",
+        });
+      }
+    });
+  });
+});
+
+//Delete
+api.delete("/api/film", (request, response) => {
+  fs.readFile("db/dbFake.json", (error, data) => {
+    if (error) throw error;
+    let filmList = JSON.parse(data);
+    let filmId = Number(request.body.id);
+    newFilmList = filmList.filter((film) => film.id !== filmId);
+    fs.writeFile("db/dbFake.json", JSON.stringify(newFilmList), (error) => {
+      if (error) {
+        response.status(400).send({
+          success: false,
+          message: "Could not delete the film, something went wrong!",
+          url: "/api/film",
+          method: "DELETE",
+        });
+      } else {
+        response.status(200).send({
+          success: false,
+          message: "Film was deleted successfully!",
+          url: "/api/film",
+          method: "DELETE",
         });
       }
     });
