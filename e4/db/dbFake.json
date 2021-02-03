@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1,
+        "title": "Schindler's list",
+        "director": "Steven Spielberg",
+        "genre": "drama",
+        "year": "1993"
+    },
+    {
+        "id": 2,
+        "title": "Pulp Fiction",
+        "director": "Quentin Tarantino",
+        "genre": "crime",
+        "year": "1994"
+    },
+    {
+        "id": 3,
+        "title": "The dark knight",
+        "director": "Christopher Nolan",
+        "genre": "action",
+        "year": "2008"
+    }
+]
