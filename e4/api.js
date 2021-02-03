@@ -55,62 +55,85 @@ api.get("/api/film", (request, response) => {
 
 //Post
 api.post("/api/films", (request, response) => {
-  fs.readFile("db/dbFake.json", (error, data) => {
-    if (error) throw error;
-    let filmList = JSON.parse(data);
-    let newFilm = {
-      id: Math.max(...filmList.map((film) => film.id)) + 1,
-      title: request.body.title,
-      director: request.body.director,
-      genre: request.body.genre,
-      year: request.body.year,
-    };
-    filmList.push(newFilm);
-    fs.writeFile("db/dbFake.json", JSON.stringify(filmList), (error) => {
-      if (error) {
-        response.status(400).send({
-          success: false,
-          message: "Could not insert the film, something went wrong!",
-          url: "/api/films",
-          method: "POST",
-        });
-      } else {
-        response.status(200).send({
-          success: false,
-          message: "Film was inserted successfully!",
-          url: "/api/films",
-          method: "POST",
-        });
-      }
+  if (
+    !request.body.title ||
+    !request.body.director ||
+    !request.body.year ||
+    !request.body.genre
+  ) {
+    response.status(400).send({
+      success: false,
+      url: "/api/films",
+      method: "POST",
+      message: "All fields are required!",
     });
-  });
+  } else {
+    fs.readFile("db/dbFake.json", (error, data) => {
+      if (error) throw error;
+      let filmList = JSON.parse(data);
+      let newFilm = {
+        id: Math.max(...filmList.map((film) => film.id)) + 1,
+        title: request.body.title,
+        director: request.body.director,
+        genre: request.body.genre,
+        year: request.body.year,
+      };
+      filmList.push(newFilm);
+      fs.writeFile("db/dbFake.json", JSON.stringify(filmList), (error) => {
+        if (error) {
+          response.status(400).send({
+            success: false,
+            message: "Could not insert the film, something went wrong!",
+            url: "/api/films",
+            method: "POST",
+          });
+        } else {
+          response.status(200).send({
+            success: false,
+            message: "Film was inserted successfully!",
+            url: "/api/films",
+            method: "POST",
+          });
+        }
+      });
+    });
+  }
 });
 
 //Delete
 api.delete("/api/film", (request, response) => {
-  fs.readFile("db/dbFake.json", (error, data) => {
-    if (error) throw error;
-    let filmList = JSON.parse(data);
-    let filmId = Number(request.body.id);
-    newFilmList = filmList.filter((film) => film.id !== filmId);
-    fs.writeFile("db/dbFake.json", JSON.stringify(newFilmList), (error) => {
-      if (error) {
-        response.status(400).send({
-          success: false,
-          message: "Could not delete the film, something went wrong!",
-          url: "/api/film",
-          method: "DELETE",
-        });
-      } else {
-        response.status(200).send({
-          success: false,
-          message: "Film was deleted successfully!",
-          url: "/api/film",
-          method: "DELETE",
-        });
-      }
+  if (!request.body.id) {
+    response.status(400).send({
+      success: false,
+      url: "/api/films",
+      method: "DELETE",
+      message: "Film is required!",
     });
-  });
+  } else {
+    fs.readFile("db/dbFake.json", (error, data) => {
+      if (error) throw error;
+      let filmList = JSON.parse(data);
+      let filmId = Number(request.body.id);
+      newFilmList = filmList.filter((film) => film.id !== filmId);
+      fs.writeFile("db/dbFake.json", JSON.stringify(newFilmList), (error) => {
+        if (error) {
+          response.status(400).send({
+            success: false,
+            message: "Could not delete the film, something went wrong!",
+            url: "/api/film",
+            method: "DELETE",
+          });
+        } else {
+          response.status(200).send({
+            success: false,
+            message: "Film was deleted successfully!",
+            url: "/api/film",
+            method: "DELETE",
+          });
+        }
+      });
+    });
+  }
 });
 
 // Get genre
