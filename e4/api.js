@@ -21,6 +21,7 @@ api.use((request, response, next) => {
 
 api.use(bodyParser.urlencoded({ extended: true }));
 
+//Get all films
 api.get("/api/films", (request, response) => {
   fs.readFile("db/dbFake.json", (error, data) => {
     if (error) throw error;
@@ -52,6 +53,7 @@ api.get("/api/film", (request, response) => {
   });
 });
 
+//Post
 api.post("/api/films", (request, response) => {
   fs.readFile("db/dbFake.json", (error, data) => {
     if (error) throw error;
@@ -107,6 +109,23 @@ api.delete("/api/film", (request, response) => {
           method: "DELETE",
         });
       }
+    });
+  });
+});
+
+// Get genre
+api.get("/api/films/genre", (request, response) => {
+  fs.readFile("db/dbFake.json", (error, data) => {
+    if (error) throw error;
+    let filmList = JSON.parse(data);
+    let genre = request.body.genre;
+    let genreFilmList = filmList.filter((film) => film.genre === genre);
+    response.status(200).send({
+      success: true,
+      message: "APIFilms",
+      url: "/api/films/genre",
+      method: "GET",
+      films: genreFilmList,
     });
   });
 });
