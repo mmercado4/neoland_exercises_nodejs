@@ -1,5 +1,6 @@
 const express = require("express");
 const api = express();
+const fs = require("fs");
 
 api.use((request, response, next) => {
   response.header("Access-Control-Allow-Origin", "*");
@@ -18,9 +19,15 @@ api.use((request, response, next) => {
 });
 
 api.get("/api/films", (request, response) => {
-  response.status(200).send({
-    success: true,
-    message: "APIFilms",
+  fs.readFile("db/dbFake.json", (error, data) => {
+    if (error) throw error;
+    const filmList = JSON.parse(data);
+    response.status(200).send({
+      success: true,
+      message: "APIFilms",
+      method: "GET",
+      films: filmList,
+    });
   });
 });
 
