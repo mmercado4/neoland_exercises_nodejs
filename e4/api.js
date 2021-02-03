@@ -35,6 +35,23 @@ api.get("/api/films", (request, response) => {
   });
 });
 
+//Get one film
+api.get("/api/film", (request, response) => {
+  fs.readFile("db/dbFake.json", (error, data) => {
+    if (error) throw error;
+    const filmList = JSON.parse(data);
+    let filmId = Number(request.query.id);
+    let filmIndex = filmList.findIndex((film) => film.id === filmId);
+    response.status(200).send({
+      success: true,
+      message: "APIFilms",
+      url: "/api/film",
+      method: "GET",
+      films: filmList[filmIndex],
+    });
+  });
+});
+
 api.post("/api/films", (request, response) => {
   fs.readFile("db/dbFake.json", (error, data) => {
     if (error) throw error;
