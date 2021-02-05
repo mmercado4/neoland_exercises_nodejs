@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Error 2</title>
+
+    <script>
+        fetch("https://jsonplaceholder.typicode.com/posts/1")
+            .then(response => {
+                console.log(); // que parametro de objeto "response" tiene el valor "cors"? pinta la solucion por consola
+                return response.json();
+            })
+            .then(json => {
+                console.log(); // pinta por consola cada uno de los parametros del objeto que devuelva la respuesta
+            });
+    </script>
+</head>
+
+<body>
+    <h1>fetch</h1>
+</body>
+
+</html>
