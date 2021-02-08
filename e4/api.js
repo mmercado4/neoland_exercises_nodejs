@@ -2,6 +2,7 @@ const express = require("express");
 const api = express();
 const fs = require("fs");
 const bodyParser = require("body-parser");
+const FILM_DB = "db/dbFake.json";
 
 api.use((request, response, next) => {
   response.header("Access-Control-Allow-Origin", "*");
@@ -23,7 +24,7 @@ api.use(bodyParser.urlencoded({ extended: true }));
 
 //Get all films
 api.get("/api/films", (request, response) => {
-  fs.readFile("db/dbFake.json", (error, data) => {
+  fs.readFile(FILM_DB, (error, data) => {
     if (error) throw error;
     const filmList = JSON.parse(data);
     response.status(200).send({
@@ -38,7 +39,7 @@ api.get("/api/films", (request, response) => {
 
 //Get one film
 api.get("/api/films/:id", (request, response) => {
-  fs.readFile("db/dbFake.json", (error, data) => {
+  fs.readFile(FILM_DB, (error, data) => {
     if (error) throw error;
     const filmList = JSON.parse(data);
     let filmId = Number(request.params.id);
@@ -69,7 +70,7 @@ api.post("/api/films", (request, response) => {
       message: "All fields are required!",
     });
   } else {
-    fs.readFile("db/dbFake.json", (error, data) => {
+    fs.readFile(FILM_DB, (error, data) => {
       if (error) throw error;
       let filmList = JSON.parse(data);
       let actors = request.body.actors.split(",").map((actor) => actor.trim());
@@ -82,7 +83,7 @@ api.post("/api/films", (request, response) => {
         actors: actors,
       };
       filmList.push(newFilm);
-      fs.writeFile("db/dbFake.json", JSON.stringify(filmList), (error) => {
+      fs.writeFile(FILM_DB, JSON.stringify(filmList), (error) => {
         if (error) {
           response.status(400).send({
             success: false,
@@ -113,7 +114,7 @@ api.delete("/api/films", (request, response) => {
       message: "Film is required!",
     });
   } else {
-    fs.readFile("db/dbFake.json", (error, data) => {
+    fs.readFile(FILM_DB, (error, data) => {
       if (error) throw error;
       let filmList = JSON.parse(data);
       let filmId = Number(request.body.id);
@@ -126,7 +127,7 @@ api.delete("/api/films", (request, response) => {
           method: "DELETE",
         });
       } else {
-        fs.writeFile("db/dbFake.json", JSON.stringify(newFilmList), (error) => {
+        fs.writeFile(FILM_DB, JSON.stringify(newFilmList), (error) => {
           if (error) {
             response.status(400).send({
               success: false,
@@ -150,7 +151,7 @@ api.delete("/api/films", (request, response) => {
 
 // Get genre
 api.get("/api/films/genre", (request, response) => {
-  fs.readFile("db/dbFake.json", (error, data) => {
+  fs.readFile(FILM_DB, (error, data) => {
     if (error) throw error;
     let filmList = JSON.parse(data);
     let genre = request.body.genre;
@@ -162,6 +163,49 @@ api.get("/api/films/genre", (request, response) => {
       method: "GET",
       films: genreFilmList,
     });
+  });
+});
+
+//Put
+api.put("/api/films/:id", (request, response) => {
+  fs.readFile("db/dbFake.json", (error, data) => {
+    if (error) throw error;
+    let filmList = JSON.parse(data);
+    let id = Number.parseInt(request.params.id);
+    let newDataProps = Object.keys(request.body);
+    let wantedIndex = filmList.findIndex((film) => film.id === id);
+    if (wantedIndex === -1) {
+      response.status(400).send({
+        success: false,
+        message: "APIFilms",
+        url: `/api/films/${id}`,
+        method: "PUT",
+        message: "Can not update this film!",
+      });
+    } else {
+      newDataProps.map(
+        (prop) => (filmList[wantedIndex][prop] = request.body[prop])
+      );
+      fs.writeFile(FILM_DB, JSON.stringify(filmList), (error) => {
+        if (error) {
+          response.status(400).send({
+            success: false,
+            message: "APIFilms",
+            url: `/api/films/${id}`,
+            method: "PUT",
+            message: "Can not update this film!",
+          });
+        } else {
+          response.status(200).send({
+            success: true,
+            message: "APIFilms",
+            url: `/api/films/${id}`,
+            method: "PUT",
+            message: "Film updated!",
+          });
+        }
+      });
+    }
   });
 });
 
