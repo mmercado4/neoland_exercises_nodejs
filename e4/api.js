@@ -89,7 +89,7 @@ api.post("/api/films", (request, response) => {
           let actorObj;
           let nextId;
           if (actorNameList.includes(actor)) {
-            actorObj = actorList.filter((obj) => obj.name === actor);
+            actorObj = actorList.find((obj) => obj.name === actor);
           } else {
             nextId = Math.max(...actorIdList) + 1;
             actorObj = {
