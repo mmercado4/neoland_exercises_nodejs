@@ -73,7 +73,35 @@ api.post("/api/films", (request, response) => {
     fs.readFile(FILM_DB, (error, data) => {
       if (error) throw error;
       let filmList = JSON.parse(data);
-      let actors = request.body.actors.split(",").map((actor) => actor.trim());
+      let actorList = filmList.map((film) => film.actors).flat();
+      let actorIdList = filmList
+        .map((film) => film.actors)
+        .flat()
+        .map((item) => item.id);
+      let actorNameList = filmList
+        .map((film) => film.actors)
+        .flat()
+        .map((item) => item.name);
+      console.log(actorIdList);
+      let actors = request.body.actors
+        .split(",")
+        .map((actor) => actor.trim())
+        .map((actor) => {
+          let actorObj;
+          let nextId;
+          if (actorNameList.includes(actor)) {
+            actorObj = actorList.filter((obj) => obj.name === actor);
+          } else {
+            nextId = Math.max(...actorIdList) + 1;
+            actorObj = {
+              id: nextId,
+              name: actor,
+            };
+            actorIdList.push(nextId);
+          }
+          return actorObj;
+        });
+
       let newFilm = {
         id: Math.max(...filmList.map((film) => film.id)) + 1,
         title: request.body.title,
@@ -83,6 +111,7 @@ api.post("/api/films", (request, response) => {
         actors: actors,
       };
       filmList.push(newFilm);
+      console.log(newFilm);
       fs.writeFile(FILM_DB, JSON.stringify(filmList), (error) => {
         if (error) {
           response.status(400).send({
@@ -184,7 +213,7 @@ api.put("/api/films/:id", (request, response) => {
       });
     } else {
       newDataProps.map(
-        (prop) => (filmList[wantedIndex][prop] = request.body[prop])
+        (prop) => (filmList[wantedIndex][prop] = request.body[prop]) //Aquí habría que incluir un control por si se cambian los actores.
       );
       fs.writeFile(FILM_DB, JSON.stringify(filmList), (error) => {
         if (error) {
@@ -206,6 +235,16 @@ api.put("/api/films/:id", (request, response) => {
         }
       });
     }
+  });
+});
+
+//Get actors
+api.put("api/films/:id/actors/:actorId", (request, response) => {
+  fs.readFile(FILM_DB, (error, data) => {
+    if (error) throw error;
+    let { id, actorId } = request.params;
+    id = Number.parseInt(id);
+    actorId = Number.parseInt(actorId);
   });
 });
 
