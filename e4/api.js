@@ -82,7 +82,6 @@ api.post("/api/films", (request, response) => {
         .map((film) => film.actors)
         .flat()
         .map((item) => item.name);
-      console.log(actorIdList);
       let actors = request.body.actors
         .split(",")
         .map((actor) => actor.trim())
@@ -239,12 +238,30 @@ api.put("/api/films/:id", (request, response) => {
 });
 
 //Get actors
-api.put("api/films/:id/actors/:actorId", (request, response) => {
+api.get("/api/films/:id/actors/:actorId", (request, response) => {
   fs.readFile(FILM_DB, (error, data) => {
     if (error) throw error;
     let { id, actorId } = request.params;
     id = Number.parseInt(id);
     actorId = Number.parseInt(actorId);
+    let filmList = JSON.parse(data);
+    let film = filmList.find((film) => film.id === id);
+    let actor = film.actors.find((actor) => actor.id === actorId);
+    if (actor) {
+      response.status(200).send({
+        success: true,
+        message: "APIFilms",
+        url: "/api/films/id/actors/id",
+        method: "GET",
+        actor: actor,
+      });
+    } else {
+      response.status(400).send({
+        success: false,
+        message: "Actor not found!",
+        method: "GET",
+      });
+    }
   });
 });
 
