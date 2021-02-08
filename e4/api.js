@@ -292,6 +292,26 @@ api.get("/api/films/:id/actors", (request, response) => {
   });
 });
 
+//Pages
+api.get("/api/films/page/:page", (request, response) => {
+  let { page } = request.params;
+  page = Number.parseInt(page);
+  fs.readFile(FILM_DB, (error, data) => {
+    if (error) throw error;
+    let filmList = JSON.parse(data);
+    let limit = 2;
+    let start = (page - 1) * limit;
+    let end = start + limit;
+    let filmPage = filmList.slice(start, end);
+    response.status(200).send({
+      success: true,
+      url: `/api/films/page/${page}`,
+      method: "GET",
+      films: filmPage,
+    });
+  });
+});
+
 api.listen(1114, () => {
   console.log("API running at port 1114");
 });
