@@ -237,7 +237,7 @@ api.put("/api/films/:id", (request, response) => {
   });
 });
 
-//Get actors
+//Get one actor
 api.get("/api/films/:id/actors/:actorId", (request, response) => {
   fs.readFile(FILM_DB, (error, data) => {
     if (error) throw error;
@@ -259,6 +259,33 @@ api.get("/api/films/:id/actors/:actorId", (request, response) => {
       response.status(400).send({
         success: false,
         message: "Actor not found!",
+        method: "GET",
+      });
+    }
+  });
+});
+
+//Get all film´s actors
+api.get("/api/films/:id/actors", (request, response) => {
+  fs.readFile(FILM_DB, (error, data) => {
+    if (error) throw error;
+    let { id } = request.params;
+    id = Number.parseInt(id);
+    let filmList = JSON.parse(data);
+    let film = filmList.find((film) => film.id === id);
+    let actors = film.actors;
+    if (actors) {
+      response.status(200).send({
+        success: true,
+        message: "APIFilms",
+        url: "/api/films/id/actors/id",
+        method: "GET",
+        actors: actors,
+      });
+    } else {
+      response.status(400).send({
+        success: false,
+        message: "Actors not found!",
         method: "GET",
       });
     }
