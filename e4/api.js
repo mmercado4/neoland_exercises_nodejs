@@ -37,16 +37,16 @@ api.get("/api/films", (request, response) => {
 });
 
 //Get one film
-api.get("/api/film", (request, response) => {
+api.get("/api/films/:id", (request, response) => {
   fs.readFile("db/dbFake.json", (error, data) => {
     if (error) throw error;
     const filmList = JSON.parse(data);
-    let filmId = Number(request.body.id);
+    let filmId = Number(request.params.id);
     let filmIndex = filmList.findIndex((film) => film.id === filmId);
     response.status(200).send({
       success: true,
       message: "APIFilms",
-      url: "/api/film",
+      url: `/api/films/${filmId}`,
       method: "GET",
       films: filmList[filmIndex],
     });
@@ -59,7 +59,8 @@ api.post("/api/films", (request, response) => {
     !request.body.title ||
     !request.body.director ||
     !request.body.year ||
-    !request.body.genre
+    !request.body.genre ||
+    !request.body.actors
   ) {
     response.status(400).send({
       success: false,
@@ -71,12 +72,14 @@ api.post("/api/films", (request, response) => {
     fs.readFile("db/dbFake.json", (error, data) => {
       if (error) throw error;
       let filmList = JSON.parse(data);
+      let actors = request.body.actors.split(",").map((actor) => actor.trim());
       let newFilm = {
         id: Math.max(...filmList.map((film) => film.id)) + 1,
         title: request.body.title,
         director: request.body.director,
         genre: request.body.genre,
         year: request.body.year,
+        actors: actors,
       };
       filmList.push(newFilm);
       fs.writeFile("db/dbFake.json", JSON.stringify(filmList), (error) => {
@@ -101,7 +104,7 @@ api.post("/api/films", (request, response) => {
 });
 
 //Delete
-api.delete("/api/film", (request, response) => {
+api.delete("/api/films", (request, response) => {
   if (!request.body.id) {
     response.status(400).send({
       success: false,
@@ -115,23 +118,32 @@ api.delete("/api/film", (request, response) => {
       let filmList = JSON.parse(data);
       let filmId = Number(request.body.id);
       newFilmList = filmList.filter((film) => film.id !== filmId);
-      fs.writeFile("db/dbFake.json", JSON.stringify(newFilmList), (error) => {
-        if (error) {
-          response.status(400).send({
-            success: false,
-            message: "Could not delete the film, something went wrong!",
-            url: "/api/film",
-            method: "DELETE",
-          });
-        } else {
-          response.status(200).send({
-            success: false,
-            message: "Film was deleted successfully!",
-            url: "/api/film",
-            method: "DELETE",
-          });
-        }
-      });
+      if (newFilmList.length === filmList.length) {
+        response.status(400).send({
+          success: false,
+          message: "Film was not found. Can not delete!",
+          url: "/api/films",
+          method: "DELETE",
+        });
+      } else {
+        fs.writeFile("db/dbFake.json", JSON.stringify(newFilmList), (error) => {
+          if (error) {
+            response.status(400).send({
+              success: false,
+              message: "Could not delete the film, something went wrong!",
+              url: "/api/films",
+              method: "DELETE",
+            });
+          } else {
+            response.status(200).send({
+              success: false,
+              message: "Film was deleted successfully!",
+              url: "/api/films",
+              method: "DELETE",
+            });
+          }
+        });
+      }
     });
   }
 });
